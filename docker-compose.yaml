@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  db:
+    container_name: db_products
+    image: postgres:alpine
+    ports:
+      - "${DB_PORT}:5432"
+    restart: always
+    volumes:
+      - pg-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+
+  redis:
+    image: "redis:alpine"
+    ports:
+      - "6379:6379"
+ 
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    environment:
+      - REDIS_HOSTS=local:redis:6379
+    ports:
+      - "8081:8081"
+    depends_on:
+        - redis
+
+volumes:
+  pg-data:
